@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_map"
+    app:startDestination="@id/login_fragment"
+
+    >
+
+    <fragment
+        android:id="@+id/login_fragment"
+        android:name="com.example.movelo.layout.LoginFragment"
+        android:label="Login Fragment">
+        <action
+            android:id="@+id/login_to_registration"
+            app:destination="@id/registration_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registration_fragment"
+        android:name="com.example.movelo.layout.RegistrationFragment"
+        android:label="Registration Fragment">
+        <action
+            android:id="@+id/registration_to_login"
+            app:destination="@id/login_fragment" />
+    </fragment>
+
+</navigation>
