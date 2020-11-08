@@ -10,100 +10,83 @@
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:src="@drawable/logo_movelo"
-        app:layout_constraintBottom_toTopOf="@id/welcome"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="136dp"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/welcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/logo"
-        android:text="Bienvenido"
+        android:text="Bienvenido ..."
         android:textColor="#FFFFFF"
         android:textAlignment="center"
         android:fontFamily="sans-serif"
-        android:textSize="28sp"
+        android:textSize="20sp"
         android:layout_margin="32dp"
-        />
-
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="256dp"
-        android:layout_height="56dp"
-        android:layout_margin="32dp"
-        android:fontFamily="sans-serif"
-        android:hint="Correo electrónico"
-        android:singleLine="false"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:backgroundTint="#0DE67E"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/welcome"
-        android:inputType="textEmailAddress"
-        />
-
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="256dp"
-        android:layout_height="56dp"
-        android:layout_margin="32dp"
-        android:fontFamily="sans-serif"
-        android:hint="Contraseña"
-        android:singleLine="false"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:backgroundTint="#0DE67E"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/email"
-        android:inputType="textPassword"/>
-
-    <Button
-        android:id="@+id/login"
-        android:layout_width="160dp"
-        android:layout_height="40dp"
-        android:layout_margin="32dp"
-        android:text="Iniciar Sesión"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/password"
-        android:background="@drawable/border_button"
-
         />
 
     <TextView
-        android:id="@+id/not_reg"
-        android:layout_width="wrap_content"
+        android:id="@+id/where"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="¿No estás registrado?"
+        app:layout_constraintTop_toBottomOf="@id/welcome"
+        android:text="¿A dónde te diriges hoy?"
         android:textColor="#FFFFFF"
-        android:textSize="12sp"
-        app:layout_constraintTop_toBottomOf="@id/login"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
+        android:textAlignment="center"
+        android:fontFamily="sans-serif"
+        android:textSize="24sp"
+        android:layout_margin="16dp"
         />
 
-    <Button
-        android:id="@+id/reg_here"
-        android:layout_width="wrap_content"
-        android:layout_height="32dp"
-
-
-        android:background="#00FFFFFF"
-        android:text="Regístrate aquí"
-        android:textColor="#0DE67E"
-        android:textSize="12sp"
-        android:textAllCaps="false"
-        app:layout_constraintStart_toStartOf="parent"
+    <EditText
+        android:id="@+id/origin"
+        android:layout_width="256dp"
+        android:layout_height="56dp"
+        android:layout_margin="24dp"
+        android:fontFamily="sans-serif"
+        android:hint="Origen"
+        android:singleLine="false"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:backgroundTint="#0DE67E"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/not_reg" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/where"
+        android:inputType="text"
+        />
+    <EditText
+        android:id="@+id/destination"
+        android:layout_width="256dp"
+        android:layout_height="56dp"
+        android:layout_margin="24dp"
+        android:fontFamily="sans-serif"
+        android:hint="Destino"
+        android:singleLine="false"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:backgroundTint="#0DE67E"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/origin"
+        android:inputType="text"
+        />
+    <Button
+        android:id="@+id/startRoute"
+        android:layout_width="160dp"
+        android:layout_height="40dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/border_button"
+        android:text="Iniciar Ruta"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/destination" />
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

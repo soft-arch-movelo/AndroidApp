@@ -8,20 +8,38 @@
 
     <fragment
         android:id="@+id/login_fragment"
-        android:name="com.example.movelo.layout.LoginFragment"
+        android:name="com.example.movelo.layout.LogFragment"
         android:label="Login Fragment">
         <action
             android:id="@+id/login_to_registration"
             app:destination="@id/registration_fragment" />
+        <action
+            android:id="@+id/login_to_buser_menu"
+            app:destination="@id/buser_menu_fragment" />
     </fragment>
 
     <fragment
         android:id="@+id/registration_fragment"
-        android:name="com.example.movelo.layout.RegistrationFragment"
+        android:name="com.example.movelo.layout.RegisterFragment"
         android:label="Registration Fragment">
         <action
             android:id="@+id/registration_to_login"
             app:destination="@id/login_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/buser_menu_fragment"
+        android:name="com.example.movelo.layout.BUserFragment"
+        android:label="BUser Menu">
+        <action
+            android:id="@+id/go_to_map"
+            app:destination="@id/maps_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/maps_fragment"
+        android:name="com.example.movelo.layout.MapsFragment"
+        android:label="Map Fragment">
     </fragment>
 
 </navigation>
