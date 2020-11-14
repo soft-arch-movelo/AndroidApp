@@ -40,6 +40,7 @@ public class RegisterFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://movelo.herokuapp.com/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -54,6 +55,7 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.registration_fragment, container, false);
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -100,11 +102,13 @@ public class RegisterFragment extends Fragment {
                         Call<Mensaje> call = service.registrarBiciusuario(
                                 correo, contrasena, id, nombre, direccion, telefono
                         );
+
                         call.enqueue(new Callback<Mensaje>() {
 
                             @Override
                             public void onResponse(Call<Mensaje> call, Response<Mensaje> response) {
                                 if (response.isSuccessful()) {
+
                                     if (response.body().getMessage().equals("Este correo ya está en uso.")) {
                                         Toast.makeText(getActivity(), "Correo ya registrado", Toast.LENGTH_SHORT).show();
                                     } else {
