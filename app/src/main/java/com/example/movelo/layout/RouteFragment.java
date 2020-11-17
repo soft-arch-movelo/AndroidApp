@@ -55,6 +55,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RouteFragment extends Fragment {
 
     RouteFragmentDirections.GoToMap action = RouteFragmentDirections.goToMap();
+    RouteFragmentDirections.FinishRoute finish = RouteFragmentDirections.finishRoute();
     private LatLng origin_latlng;
     private LatLng destination_latlng;
     Button seeMap;
@@ -94,6 +95,7 @@ public class RouteFragment extends Fragment {
                 args.getDestinationLatitude().equals("") ||
                 args.getDestinationLongitude().equals("")) {
                 Toast.makeText(getActivity(), "Error al generar la ruta. Vuelva a intentarlo", Toast.LENGTH_SHORT).show();
+
 
         } else {
             action.setOriginLatitude(args.getOriginLatitude());
@@ -178,7 +180,9 @@ public class RouteFragment extends Fragment {
                     public void onResponse(Call<Mensaje> call, Response<Mensaje> response) {
                         if(response.isSuccessful()){
                             Toast.makeText(getActivity(), "¡Que tengas un buen día!", Toast.LENGTH_SHORT).show();
-                            Navigation.findNavController(view).navigate(R.id.finish_route);
+                            finish.setUserToken(token);
+                            Navigation.findNavController(view).navigate(finish);
+
                         }else{
                             Toast.makeText(getActivity(), "Error del servidor", Toast.LENGTH_SHORT).show();
                         }
@@ -190,8 +194,10 @@ public class RouteFragment extends Fragment {
                     }
                 });
                 System.out.println("DISTANCIA:  " + mt_distance + " metros");
-                System.out.println("TOKEN:   " + token);
+
             }
         });
     }
+
+
 }

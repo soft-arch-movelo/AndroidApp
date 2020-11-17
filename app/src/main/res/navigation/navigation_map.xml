@@ -34,6 +34,9 @@
         <action
             android:id="@+id/go_to_route"
             app:destination="@id/route_fragment" />
+        <action
+            android:id="@+id/go_to_co2"
+            app:destination="@id/co2_fragment" />
         <argument
             android:name="user_token"
             app:argType="string"
@@ -47,9 +50,11 @@
         <action
             android:id="@+id/go_to_map"
             app:destination="@id/maps_fragment" />
+
         <action
             android:id="@+id/finish_route"
             app:destination="@id/buser_menu_fragment" />
+
         <argument
             android:name="origin_latitude"
             app:argType="string"
@@ -70,6 +75,21 @@
             android:name="user_token"
             app:argType="string"
             android:defaultValue="No Token" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/co2_fragment"
+        android:name="com.example.movelo.layout.CO2Fragment"
+        android:label="CO2 Fragment" >
+        <action
+            android:id="@+id/go_to_buser"
+            app:destination="@id/buser_menu_fragment" />
+
+        <argument
+            android:name="user_token"
+            app:argType="string"
+            android:defaultValue="" />
+
     </fragment>
 
     <fragment

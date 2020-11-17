@@ -41,6 +41,8 @@ public class BikeUserFragment extends Fragment {
     EditText origin;
     EditText destination;
     Button startRoute;
+    Button mihuella;
+
     String token = "";
 
 
@@ -84,8 +86,10 @@ public class BikeUserFragment extends Fragment {
         origin = view.findViewById(R.id.origin);
         destination = view.findViewById(R.id.destination);
         startRoute = view.findViewById(R.id.startRoute);
+        mihuella = view.findViewById(R.id.miHuella);
 
         BikeUserFragmentDirections.GoToRoute action = BikeUserFragmentDirections.goToRoute();
+        BikeUserFragmentDirections.GoToCo2 goToCo2 = BikeUserFragmentDirections.goToCo2();
 
         startRoute.setOnClickListener(new View.OnClickListener() {
 
@@ -147,6 +151,7 @@ public class BikeUserFragment extends Fragment {
                         action.setDestinationLongitude(longitud);
                         action.setUserToken(token);
 
+
                         System.out.println("Colocadas latitud " + latitud + " y longitud " + longitud);
 
 
@@ -162,6 +167,15 @@ public class BikeUserFragment extends Fragment {
                 });
 
 
+            }
+        });
+
+        mihuella.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToCo2.setUserToken(token);
+
+                Navigation.findNavController(view).navigate(goToCo2);
             }
         });
 
