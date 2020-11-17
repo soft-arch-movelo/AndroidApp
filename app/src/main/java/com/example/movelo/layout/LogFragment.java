@@ -55,6 +55,7 @@ public class LogFragment extends Fragment {
         EditText editText_correo = view.findViewById(R.id.email);
         EditText editText_contrasena = view.findViewById(R.id.password);
 
+        LogFragmentDirections.LoginToBuserMenu action = LogFragmentDirections.loginToBuserMenu();
 
         login.setOnClickListener(new View.OnClickListener() {
 
@@ -78,12 +79,14 @@ public class LogFragment extends Fragment {
                                     Toast.makeText(getActivity(), "Correo o contraseña inválidos", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(getActivity(), "Bienvenido", Toast.LENGTH_SHORT).show();
-                                    Navigation.findNavController(view).navigate(R.id.login_to_buser_menu);
+                                    action.setUserToken(response.body().getMessage());
+                                    Navigation.findNavController(view).navigate(action);
                                 }
                                 System.out.println("Token: " + response.body().getMessage());
                             } else {
                                 Toast.makeText(getActivity(), "Error del servidor", Toast.LENGTH_SHORT).show();
                             }
+
                         }
 
                         @Override

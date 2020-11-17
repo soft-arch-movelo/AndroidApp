@@ -26,6 +26,17 @@ public interface ApiService {
     );
 
     @FormUrlEncoded
+    @POST("/registrarEmpresa")
+    Call<Mensaje> registrarEmpresa(
+            @Field("correo") String correo,
+            @Field("contrasena") String contrasena,
+            @Field("nit") String nit,
+            @Field("nombre") String nombre,
+            @Field("direccion") String direccion,
+            @Field("telefono") String telefono
+    );
+
+    @FormUrlEncoded
     @POST("/login")
     Call<Mensaje> login(
             @Field("correo") String correo,
@@ -38,5 +49,15 @@ public interface ApiService {
             @Query("key") String key
     );
 
+    @FormUrlEncoded
+    @POST("/enviarDistanciaRecorrido")
+    Call<Mensaje> enviarDistanciaRecorrida(
+            @Field("token") String token,
+            @Field("distancia") int distancia
+    );
 
+    @GET("/consultarHuellaDeCarbono")
+    Call<Mensaje> getHuella(
+            @Query("token") String token
+    );
 }

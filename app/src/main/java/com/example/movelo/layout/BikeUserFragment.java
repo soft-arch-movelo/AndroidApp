@@ -35,26 +35,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class BikeUserFragment extends Fragment {
 
-    Retrofit routeRetrofit;
-    ApiService routeService;
     Retrofit latlngRetrofit;
     ApiService latlngService;
+
     EditText origin;
     EditText destination;
     Button startRoute;
-    double origin_latitude;
-    double origin_longitude;
-    double destination_latitude;
-    double destination_longitude;
+    String token = "";
+
+
+
     final String API_KEY = "AIzaSyB6VDVQE8QPCLFaa1Z11Fli_5LM3DZJh8I";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        routeRetrofit = new Retrofit.Builder()
-                .baseUrl("https://maps.googleapis.com/maps/api/directions/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        routeService = routeRetrofit.create(ApiService.class);
+
 
         latlngRetrofit = new Retrofit.Builder()
                 .baseUrl("https://maps.googleapis.com/")
@@ -69,12 +64,20 @@ public class BikeUserFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        BikeUserFragmentArgs args = BikeUserFragmentArgs.fromBundle(getArguments());
+        if(!args.getUserToken().equals("")){
+            token = args.getUserToken();
+            System.out.println(token);
+        }else{
+            System.out.println("No pude recibir el token");
+        }
+
         return inflater.inflate(R.layout.b_user_menu, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Bundle bundle = new Bundle();
+
 
         super.onViewCreated(view, savedInstanceState);
 
@@ -82,6 +85,7 @@ public class BikeUserFragment extends Fragment {
         destination = view.findViewById(R.id.destination);
         startRoute = view.findViewById(R.id.startRoute);
 
+        BikeUserFragmentDirections.GoToRoute action = BikeUserFragmentDirections.goToRoute();
 
         startRoute.setOnClickListener(new View.OnClickListener() {
 
@@ -90,17 +94,22 @@ public class BikeUserFragment extends Fragment {
 
                 String origen = origin.getText().toString();
                 String destino = destination.getText().toString();
-                BikeUserFragmentDirections.GoToMap action = BikeUserFragmentDirections.goToMap();
+
 
                 Call<LatLngResults> originLatLngResultsCall = latlngService.getLatLng(origen, API_KEY);
                 originLatLngResultsCall.enqueue(new Callback<LatLngResults>() {
                     @Override
                     public void onResponse(Call<LatLngResults> call, Response<LatLngResults> response) {
-                       String latitud = "";
-                       String longitud = "";
+                        String latitud = "";
+                        String longitud = "";
                         if (response.body() != null) {
-                            latitud = Double.toString(response.body().getResults().get(0).getGeometry().getLocation().getLat());
-                            longitud = Double.toString(response.body().getResults().get(0).getGeometry().getLocation().getLng());
+                            if (response.body().getStatus().equals("ZERO_RESULTS")) {
+                                Toast.makeText(getActivity(), "No se pudo encontrar la dirección de origen", Toast.LENGTH_SHORT).show();
+                            } else {
+                                latitud = Double.toString(response.body().getResults().get(0).getGeometry().getLocation().getLat());
+                                longitud = Double.toString(response.body().getResults().get(0).getGeometry().getLocation().getLng());
+                            }
+
 
                         } else {
                             Toast.makeText(getActivity(), "No se pudo encontrar la dirección de origen", Toast.LENGTH_SHORT).show();
@@ -115,24 +124,35 @@ public class BikeUserFragment extends Fragment {
                         Toast.makeText(getActivity(), "Imposible contactar con el servidor. Revise su conexión a internet", Toast.LENGTH_SHORT).show();
                     }
                 });
+
                 Call<LatLngResults> destinationLatLngResultsCall = latlngService.getLatLng(destino, API_KEY);
                 destinationLatLngResultsCall.enqueue(new Callback<LatLngResults>() {
                     @Override
                     public void onResponse(Call<LatLngResults> call, Response<LatLngResults> response) {
-                        String latitud ="";
+                        String latitud = "";
                         String longitud = "";
                         if (response.body() != null) {
-                            latitud = Double.toString(response.body().getResults().get(0).getGeometry().getLocation().getLat());
-                            longitud = Double.toString(response.body().getResults().get(0).getGeometry().getLocation().getLng());
+                            if (response.body().getStatus().equals("ZERO_RESULTS")) {
+                                Toast.makeText(getActivity(), "No se pudo encontrar la dirección de destino", Toast.LENGTH_LONG).show();
+
+                            } else {
+                                latitud = Double.toString(response.body().getResults().get(0).getGeometry().getLocation().getLat());
+                                longitud = Double.toString(response.body().getResults().get(0).getGeometry().getLocation().getLng());
+                            }
                         } else {
-                            Toast.makeText(getActivity(), "No se pudo encontrar la dirección de destino", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "No se pudo encontrar la dirección de destino", Toast.LENGTH_LONG).show();
 
                         }
                         action.setDestinationLatitude(latitud);
                         action.setDestinationLongitude(longitud);
+                        action.setUserToken(token);
+
                         System.out.println("Colocadas latitud " + latitud + " y longitud " + longitud);
 
+
                         Navigation.findNavController(view).navigate(action);
+
+
                     }
 
                     @Override
@@ -142,14 +162,10 @@ public class BikeUserFragment extends Fragment {
                 });
 
 
-
             }
         });
 
     }
 
-    public void findRoute() {
-
-    }
 }
 

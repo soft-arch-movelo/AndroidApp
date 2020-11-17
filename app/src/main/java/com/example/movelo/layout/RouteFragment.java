@@ -52,54 +52,79 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RouteFragment extends SupportMapFragment implements OnMapReadyCallback {
+public class RouteFragment extends Fragment {
 
-
-    private GoogleMap mMap;
+    RouteFragmentDirections.GoToMap action = RouteFragmentDirections.goToMap();
     private LatLng origin_latlng;
     private LatLng destination_latlng;
-    private ArrayList <LatLng> polyline_points = new ArrayList<>();
-
+    Button seeMap;
+    Button endRoute;
+    String distance = "";
+    String token = "";
     final String API_KEY = "AIzaSyB6VDVQE8QPCLFaa1Z11Fli_5LM3DZJh8I";
+
+    Retrofit retrofit;
+    ApiService service;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        retrofit = new Retrofit.Builder()
+                .baseUrl("https://movelo.herokuapp.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        service = retrofit.create(ApiService.class);
+
+        super.onCreate(savedInstanceState);
+
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        getMapAsync(this);
 
         RouteFragmentArgs args = RouteFragmentArgs.fromBundle(getArguments());
 
 
+        if (args.getOriginLatitude().equals("No Latitude") ||
+                args.getOriginLongitude().equals("No Longitude") ||
+                args.getDestinationLatitude().equals("No Latitude") ||
+                args.getDestinationLongitude().equals("No Longitude") ||
+                args.getOriginLatitude().equals("") ||
+                args.getOriginLongitude().equals("") ||
+                args.getDestinationLatitude().equals("") ||
+                args.getDestinationLongitude().equals("")) {
+                Toast.makeText(getActivity(), "Error al generar la ruta. Vuelva a intentarlo", Toast.LENGTH_SHORT).show();
 
-       double origin_latitude = Double.parseDouble(args.getOriginLatitude());
-        double origin_longitude = Double.parseDouble(args.getOriginLongitude());
-        double destination_latitude = Double.parseDouble(args.getDestinationLatitude());
-        double destination_longitude = Double.parseDouble(args.getDestinationLongitude());
+        } else {
+            action.setOriginLatitude(args.getOriginLatitude());
+            action.setOriginLongitude(args.getOriginLongitude());
+            action.setDestinationLatitude(args.getDestinationLatitude());
+            action.setDestinationLongitude(args.getDestinationLongitude());
+            origin_latlng = new LatLng(Double.parseDouble(args.getOriginLatitude()), Double.parseDouble(args.getOriginLongitude()));
+            destination_latlng = new LatLng(Double.parseDouble(args.getDestinationLatitude()),Double.parseDouble(args.getDestinationLongitude()));
+        }
 
-        System.out.println("Latitud origen " + origin_latitude);
-        System.out.println("Longitud origen " + origin_longitude);
-        System.out.println("Latitud destino " + destination_latitude);
-        System.out.println("Longitud destino " + destination_longitude);
+        if(!args.getUserToken().equals("")){
+            token = args.getUserToken();
+        }else{
+            System.out.println("No recibi token en ruta");
+        }
+        System.out.println("Latitud origen " + args.getOriginLatitude());
+        System.out.println("Longitud origen " + args.getOriginLongitude());
+        System.out.println("Latitud destino " +  args.getDestinationLatitude());
+        System.out.println("Longitud destino " + args.getDestinationLongitude());
 
 
-        origin_latlng = new LatLng(origin_latitude, origin_longitude);
-        destination_latlng = new LatLng(destination_latitude, destination_longitude);
-
-        return rootView;
+        return inflater.inflate(R.layout.route_fragment, container, false);
     }
 
-
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
 
-        mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
+        seeMap = view.findViewById(R.id.startRoute);
+        endRoute = view.findViewById(R.id.end);
 
         if (origin_latlng != null && destination_latlng != null) {
             GoogleDirection.withServerKey(API_KEY)
@@ -110,29 +135,14 @@ public class RouteFragment extends SupportMapFragment implements OnMapReadyCallb
                         public void onDirectionSuccess(Direction direction) {
                             String status = direction.getStatus();
                             if (status.equals(RequestResult.OK)) {
+                                System.out.println("Todo correcto");
                                 Route route = direction.getRouteList().get(0);
                                 Leg leg = route.getLegList().get(0);
-                                polyline_points.addAll(leg.getDirectionPoint());
-                                System.out.println("Encontrados puntos");
-
+                                distance = leg.getDistance().getText();
+                                Toast.makeText(getActivity(), "Ruta Encontrada", Toast.LENGTH_SHORT).show();
+                                System.out.println("DISTANCIA:  " + distance);
                             } else if (status.equals(RequestResult.NOT_FOUND)) {
-                                System.out.println("No se encontró una ruta");
-                            }
-
-                            if(polyline_points.size()>0){
-                                System.out.println(polyline_points);
-                                LatLng origin = polyline_points.get(0);
-                                LatLng destination = polyline_points.get(polyline_points.size()-1);
-
-                                mMap.addMarker(new MarkerOptions().position(origin).title("Origen"));
-                                mMap.addMarker(new MarkerOptions().position(destination).title("Destino"));
-
-                                PolylineOptions polylineOptions = DirectionConverter.createPolyline(getContext(), polyline_points, 5, Color.RED);
-                                mMap.addPolyline(polylineOptions);
-
-                                mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
-                                mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-                                mMap.getUiSettings().setZoomControlsEnabled(true);
+                                Toast.makeText(getActivity(), "Ruta no Encontrada", Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -142,17 +152,46 @@ public class RouteFragment extends SupportMapFragment implements OnMapReadyCallb
                         }
                     });
         } else {
-            System.out.println("Latitudes longitudes nulas");
+            System.out.println("Alguna latitud nula");
         }
 
+        seeMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(action);
+            }
+        });
 
 
 
+        endRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String formattedDistance = distance.replace("km", "");
+                String finalDistance = formattedDistance.replace(" ", "");
+                double double_distance = Double.parseDouble(finalDistance);
+                int mt_distance = ((int) double_distance) * 1000;
 
+                Call <Mensaje> call = service.enviarDistanciaRecorrida(token, mt_distance);
+                call.enqueue(new Callback<Mensaje>() {
+                    @Override
+                    public void onResponse(Call<Mensaje> call, Response<Mensaje> response) {
+                        if(response.isSuccessful()){
+                            Toast.makeText(getActivity(), "¡Que tengas un buen día!", Toast.LENGTH_SHORT).show();
+                            Navigation.findNavController(view).navigate(R.id.finish_route);
+                        }else{
+                            Toast.makeText(getActivity(), "Error del servidor", Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<Mensaje> call, Throwable t) {
+                        Toast.makeText(getActivity(), "Imposible contactar con el servidor. Revise su conexión a internet", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                System.out.println("DISTANCIA:  " + mt_distance + " metros");
+                System.out.println("TOKEN:   " + token);
+            }
+        });
     }
-
-
-
-
 }

@@ -71,7 +71,6 @@ public class RegisterFragment extends Fragment {
         EditText editText_contrasena = view.findViewById(R.id.password);
         RadioGroup radioGroup = view.findViewById(R.id.radiogroup);
 
-
         goToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,10 +94,11 @@ public class RegisterFragment extends Fragment {
 
                 int selected = radioGroup.getCheckedRadioButtonId();
 
+                boolean somethingEmpty = correo.equals("") || contrasena.equals("") || nombre.equals("") || direccion.equals("") || telefono.equals("") || id.equals("");
                 if (selected == 1) {
-                    if(correo.equals("")||contrasena.equals("")||nombre.equals("")||direccion.equals("")||telefono.equals("")||id.equals("")) {
+                    if (somethingEmpty) {
                         Toast.makeText(getActivity(), "Por favor rellene todos los campos", Toast.LENGTH_SHORT).show();
-                    }else{
+                    } else {
                         Call<Mensaje> call = service.registrarBiciusuario(
                                 correo, contrasena, id, nombre, direccion, telefono
                         );
@@ -129,9 +129,42 @@ public class RegisterFragment extends Fragment {
 
                         });
                     }
-                }else if(selected==2){
+                } else if (selected == 2) {
+                    if (somethingEmpty) {
+                        Toast.makeText(getActivity(), "Por favor rellene todos los campos", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Call<Mensaje> call = service.registrarEmpresa(
+                                correo, contrasena, id, nombre, direccion, telefono
+                        );
 
-                }else {
+                        call.enqueue(new Callback<Mensaje>() {
+
+                            @Override
+                            public void onResponse(Call<Mensaje> call, Response<Mensaje> response) {
+                                if (response.isSuccessful()) {
+
+                                    if (response.body().getMessage().equals("Este correo ya está en uso.")) {
+                                        Toast.makeText(getActivity(), "Correo ya registrado", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getActivity(), "Registro Exitoso", Toast.LENGTH_SHORT).show();
+                                        Navigation.findNavController(view).navigate(R.id.registration_to_login);
+                                    }
+                                    System.out.println("El mensaje es " + response.body().getMessage());
+                                } else {
+                                    Toast.makeText(getActivity(), "Error del servidor al procesar el registro", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Mensaje> call, Throwable t) {
+                                System.out.println(t.toString());
+                                Toast.makeText(getActivity(), "Imposible contactar con el servidor. Revise su conexión a internet", Toast.LENGTH_SHORT).show();
+                            }
+
+                        });
+                    }
+                } else {
+                    selected = radioGroup.getCheckedRadioButtonId();
                     Toast.makeText(getActivity(), "Seleccione si es Biciusuario o Empresa", Toast.LENGTH_SHORT).show();
                 }
             }

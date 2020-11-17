@@ -32,14 +32,49 @@
         android:name="com.example.movelo.layout.BikeUserFragment"
         android:label="BUser Menu">
         <action
+            android:id="@+id/go_to_route"
+            app:destination="@id/route_fragment" />
+        <argument
+            android:name="user_token"
+            app:argType="string"
+            android:defaultValue="No Token" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/route_fragment"
+        android:name="com.example.movelo.layout.RouteFragment"
+        android:label="Route Fragment" >
+        <action
             android:id="@+id/go_to_map"
             app:destination="@id/maps_fragment" />
-
+        <action
+            android:id="@+id/finish_route"
+            app:destination="@id/buser_menu_fragment" />
+        <argument
+            android:name="origin_latitude"
+            app:argType="string"
+            android:defaultValue="No Latitude" />
+        <argument
+            android:name="origin_longitude"
+            app:argType="string"
+            android:defaultValue="No Longitude" />
+        <argument
+            android:name="destination_latitude"
+            app:argType="string"
+            android:defaultValue="No Latitude" />
+        <argument
+            android:name="destination_longitude"
+            app:argType="string"
+            android:defaultValue="No Longitude" />
+        <argument
+            android:name="user_token"
+            app:argType="string"
+            android:defaultValue="No Token" />
     </fragment>
 
     <fragment
         android:id="@+id/maps_fragment"
-        android:name="com.example.movelo.layout.RouteFragment"
+        android:name="com.example.movelo.layout.MapFragment"
         android:label="Map Fragment" >
         <argument
             android:name="origin_latitude"
@@ -58,5 +93,7 @@
             app:argType="string"
             android:defaultValue="No Longitude" />
     </fragment>
+
+
 
 </navigation>
